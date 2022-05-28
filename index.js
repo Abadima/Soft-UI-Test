@@ -1,7 +1,8 @@
-require('dotenv').config()
-const Wok = require('wokcommands');
 const { Client, Intents } = require('discord.js');
+const setDB = require('./Schemas/guilds.js');
+const Wok = require('wokcommands');
 const path = require('path');
+require('dotenv').config()
 
 const client = new Client({
 	partials: ["CHANNEL", "MESSAGE", "REACTION"],
@@ -29,8 +30,6 @@ client.on('ready', async () => {
 
 		showWarns: true,
 
-		delErrMsgCooldown: 5,
-
 		dbOptions: {
 			useUnifiedTopology: true,
 			useNewUrlParser: true,
@@ -51,11 +50,14 @@ client.on('ready', async () => {
 			'channelonly'
 		], mongoUri: process.env.MongoURL,
 	}).setDefaultPrefix('​')
-	
+
 	wok.on('databaseConnected', async (connection, state) => {
-		console.log('WOKCommands > Database', state)
+		await setDB?.find().then(d => {
+			console.log('WOKCommands > Database', state)
+		})
 	})
 })
+
 process.on("unhandledRejection", (reason, p) => {
 	console.log("[Neko's Anti-Crash] Unhandled Rejection/Catch");
 	console.log(reason, p);
